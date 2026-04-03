@@ -1,305 +1,480 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>States of India Game</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>States of India Game</title>
 
-<style>
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(#e7f7ff, #fff5d9);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 12px;
-}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #e7f7ff 0%, #fff5d9 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      color: #2f3559;
+    }
 
-.game-container {
-  width: 100%;
-  max-width: 850px;
-  background: white;
-  border-radius: 24px;
-  padding: 20px 16px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
+    .game-container {
+      width: 100%;
+      max-width: 850px;
+      background: rgba(255, 255, 255, 0.97);
+      border-radius: 26px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+      padding: 20px 16px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
 
-#confetti-container {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
+    #confetti-container {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
 
-h1 {
-  font-size: clamp(1.6rem, 4vw, 2.3rem);
-  margin-bottom: 6px;
-  color: #ff6b6b;
-}
+    .content {
+      position: relative;
+      z-index: 2;
+    }
 
-.subtitle {
-  font-size: 14px;
-  margin-bottom: 12px;
-}
+    h1 {
+      margin: 0 0 6px;
+      font-size: clamp(1.6rem, 4vw, 2.3rem);
+      color: #ff6b6b;
+    }
 
-.scoreboard {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 12px;
-}
+    .subtitle {
+      margin: 0 0 14px;
+      font-size: clamp(0.9rem, 2.2vw, 1rem);
+      color: #4f5577;
+      line-height: 1.4;
+    }
 
-.score-box {
-  background: #eef7ff;
-  padding: 8px 12px;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: bold;
-}
+    .scoreboard {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
 
-.state-box {
-  background: #e8f2ff;
-  padding: 16px;
-  border-radius: 18px;
-  font-size: clamp(1.6rem, 4vw, 2.2rem);
-  font-weight: bold;
-  margin: 12px 0;
-}
+    .score-box {
+      background: #f7fbff;
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
 
-.button-row {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
+    .settings-panel {
+      background: #f8fbff;
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
 
-.option-btn {
-  padding: 14px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 16px;
-  cursor: pointer;
-  font-weight: bold;
-}
+    .settings-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #4f5577;
+      font-size: 0.95rem;
+    }
 
-.option-btn:nth-child(1){background:#ffe0e0;}
-.option-btn:nth-child(2){background:#e2f1ff;}
-.option-btn:nth-child(3){background:#e3ffeb;}
-.option-btn:nth-child(4){background:#fff1cc;}
+    .controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
 
-.feedback {
-  margin-top: 10px;
-  min-height: 40px;
-  font-weight: bold;
-}
+    .mute-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      cursor: pointer;
+      background: #e2f1ff;
+      color: #2f3559;
+    }
 
-.restart-btn {
-  margin-top: 12px;
-  padding: 12px 20px;
-  border-radius: 14px;
-  background: #4aa3df;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
+    .volume-label {
+      font-weight: bold;
+      color: #4f5577;
+      font-size: 0.95rem;
+    }
 
-/* ⭐ CONFETTI */
-.confetti {
-  position: absolute;
-  font-size: 22px;
-  animation: fall linear forwards;
-}
+    #volumeControl {
+      width: min(220px, 55vw);
+      cursor: pointer;
+    }
 
-@keyframes fall {
-  0% { transform: translateY(-20px) rotate(0deg); opacity:1; }
-  100% { transform: translateY(600px) rotate(360deg); opacity:0; }
-}
+    #volumeValue {
+      font-weight: bold;
+      min-width: 44px;
+      display: inline-block;
+      color: #4f5577;
+    }
 
-/* MOBILE */
-@media (max-width:600px){
-  .button-row { grid-template-columns:1fr; }
-  .option-btn { padding:16px; }
-  .state-box { font-size:1.8rem; }
-}
-</style>
+    .question-card {
+      padding: 18px 12px;
+      margin-bottom: 14px;
+    }
+
+    .question-label {
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #4f5577;
+      font-size: 1rem;
+    }
+
+    .state-box {
+      min-height: 80px;
+      padding: 14px;
+      margin-bottom: 14px;
+      border-radius: 20px;
+      background: #e9f3ff;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .option-btn {
+      border: none;
+      border-radius: 18px;
+      min-height: 70px;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      color: #2f3559;
+      line-height: 1.3;
+    }
+
+    .option-btn:disabled {
+      opacity: 0.9;
+      cursor: default;
+    }
+
+    .option-btn:nth-child(1) { background: #ffe0e0; }
+    .option-btn:nth-child(2) { background: #e2f1ff; }
+    .option-btn:nth-child(3) { background: #e3ffeb; }
+    .option-btn:nth-child(4) { background: #fff1cc; }
+
+    .feedback {
+      min-height: 50px;
+      font-weight: bold;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      line-height: 1.4;
+      padding: 4px 6px;
+    }
+
+    .restart-btn {
+      padding: 12px 20px;
+      border-radius: 16px;
+      background: #69c9f2;
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .confetti {
+      position: absolute;
+      font-size: 24px;
+      animation: fall linear forwards;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-20px) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(650px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .game-container {
+        padding: 16px 12px;
+      }
+
+      .button-row {
+        grid-template-columns: 1fr;
+      }
+
+      .option-btn {
+        min-height: 65px;
+        font-size: 1rem;
+      }
+
+      .state-box {
+        font-size: 1.8rem;
+      }
+
+      .score-box {
+        font-size: 0.85rem;
+        padding: 8px 10px;
+      }
+
+      .controls-row {
+        gap: 8px;
+      }
+
+      .mute-btn {
+        font-size: 0.9rem;
+        padding: 9px 12px;
+      }
+
+      #volumeControl {
+        width: min(180px, 52vw);
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="game-container">
+    <div id="confetti-container"></div>
 
-<div class="game-container">
-<div id="confetti-container"></div>
+    <div class="content">
+      <h1>States of India Game</h1>
+      <p class="subtitle">Choose the correct capital city</p>
 
-<h1>States of India</h1>
-<p class="subtitle">Choose the correct capital</p>
+      <div class="scoreboard">
+        <div class="score-box">Score: <span id="score">0</span></div>
+        <div class="score-box">Q: <span id="qno">1</span>/10</div>
+      </div>
 
-<div class="scoreboard">
-  <div class="score-box">Score: <span id="score">0</span></div>
-  <div class="score-box">Q: <span id="qno">1</span>/10</div>
-</div>
+      <div class="settings-panel">
+        <div class="settings-title">Sound Controls</div>
+        <div class="controls-row">
+          <button class="mute-btn" id="muteBtn" type="button">🔊 Sound On</button>
+          <label class="volume-label" for="volumeControl">Volume</label>
+          <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.5">
+          <span id="volumeValue">50%</span>
+        </div>
+      </div>
 
-<div class="state-box" id="stateBox"></div>
-<div class="button-row" id="options"></div>
-<div class="feedback" id="feedback"></div>
+      <div class="question-card">
+        <div class="question-label">What is the capital of this state?</div>
+        <div class="state-box" id="stateBox"></div>
+        <div class="button-row" id="options"></div>
+        <div class="feedback" id="feedback"></div>
+      </div>
 
-<button class="restart-btn" onclick="startGame()">Restart</button>
-</div>
+      <button class="restart-btn" onclick="startGame()">Restart</button>
+    </div>
+  </div>
 
-<script>
+  <script>
+    const allQuestions = [
+      { state: "Maharashtra", capital: "Mumbai" },
+      { state: "Karnataka", capital: "Bengaluru" },
+      { state: "Tamil Nadu", capital: "Chennai" },
+      { state: "Gujarat", capital: "Gandhinagar" },
+      { state: "Rajasthan", capital: "Jaipur" },
+      { state: "West Bengal", capital: "Kolkata" },
+      { state: "Uttar Pradesh", capital: "Lucknow" },
+      { state: "Madhya Pradesh", capital: "Bhopal" },
+      { state: "Bihar", capital: "Patna" },
+      { state: "Punjab", capital: "Chandigarh" },
+      { state: "Haryana", capital: "Chandigarh" },
+      { state: "Odisha", capital: "Bhubaneswar" },
+      { state: "Assam", capital: "Dispur" },
+      { state: "Kerala", capital: "Thiruvananthapuram" },
+      { state: "Jharkhand", capital: "Ranchi" },
+      { state: "Chhattisgarh", capital: "Raipur" },
+      { state: "Himachal Pradesh", capital: "Shimla" },
+      { state: "Uttarakhand", capital: "Dehradun" },
+      { state: "Goa", capital: "Panaji" },
+      { state: "Sikkim", capital: "Gangtok" }
+    ];
 
-const allQuestions = [
-{state:"Maharashtra",capital:"Mumbai"},
-{state:"Karnataka",capital:"Bengaluru"},
-{state:"Tamil Nadu",capital:"Chennai"},
-{state:"Gujarat",capital:"Gandhinagar"},
-{state:"Rajasthan",capital:"Jaipur"},
-{state:"West Bengal",capital:"Kolkata"},
-{state:"Uttar Pradesh",capital:"Lucknow"},
-{state:"Madhya Pradesh",capital:"Bhopal"},
-{state:"Bihar",capital:"Patna"},
-{state:"Punjab",capital:"Chandigarh"},
-{state:"Haryana",capital:"Chandigarh"},
-{state:"Odisha",capital:"Bhubaneswar"},
-{state:"Assam",capital:"Dispur"},
-{state:"Kerala",capital:"Thiruvananthapuram"},
-{state:"Jharkhand",capital:"Ranchi"},
-{state:"Chhattisgarh",capital:"Raipur"},
-{state:"Himachal Pradesh",capital:"Shimla"},
-{state:"Uttarakhand",capital:"Dehradun"},
-{state:"Goa",capital:"Panaji"},
-{state:"Sikkim",capital:"Gangtok"}
-];
+    const allCapitals = [...new Set(allQuestions.map(q => q.capital))];
 
-const allCapitals = [...new Set(allQuestions.map(q=>q.capital))];
+    let selectedQuestions = [];
+    let current = 0;
+    let score = 0;
+    let locked = false;
 
-let selectedQuestions=[];
-let current=0;
-let score=0;
-let locked=false;
+    let audioCtx;
+    let isMuted = false;
+    let volume = 0.5;
 
-/* SHUFFLE */
-function shuffle(arr){
-  const a=[...arr];
-  for(let i=a.length-1;i>0;i--){
-    let j=Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
-  }
-  return a;
-}
+    const stateBox = document.getElementById("stateBox");
+    const qnoEl = document.getElementById("qno");
+    const scoreEl = document.getElementById("score");
+    const optionsEl = document.getElementById("options");
+    const feedbackEl = document.getElementById("feedback");
+    const confettiContainer = document.getElementById("confetti-container");
+    const muteBtn = document.getElementById("muteBtn");
+    const volumeControl = document.getElementById("volumeControl");
+    const volumeValue = document.getElementById("volumeValue");
 
-/* START */
-function startGame(){
-  current=0;
-  score=0;
-  locked=false;
+    function shuffle(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
 
-  selectedQuestions = shuffle(allQuestions).slice(0,10);
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === "suspended") {
+        audioCtx.resume();
+      }
+    }
 
-  showQuestion();
-}
+    document.body.addEventListener("click", initAudio, { once: true });
+    document.body.addEventListener("touchstart", initAudio, { once: true });
 
-/* SHOW QUESTION */
-function showQuestion(){
+    muteBtn.addEventListener("click", function () {
+      isMuted = !isMuted;
+      muteBtn.textContent = isMuted ? "🔇 Sound Off" : "🔊 Sound On";
+    });
 
-  if(current>=selectedQuestions.length){
-    document.getElementById("stateBox").innerText="Game Over";
-    document.getElementById("options").innerHTML="";
-    document.getElementById("feedback").innerText="Final Score: "+score+"/100";
-    return;
-  }
+    volumeControl.addEventListener("input", function () {
+      volume = parseFloat(this.value);
+      volumeValue.textContent = Math.round(volume * 100) + "%";
+    });
 
-  locked=false;
+    function startGame() {
+      current = 0;
+      score = 0;
+      locked = false;
+      selectedQuestions = shuffle(allQuestions).slice(0, 10);
+      feedbackEl.textContent = "";
+      showQuestion();
+    }
 
-  let q=selectedQuestions[current];
+    function showQuestion() {
+      if (current >= selectedQuestions.length) {
+        stateBox.textContent = "Game Over";
+        optionsEl.innerHTML = "";
+        feedbackEl.textContent = "Final Score: " + score + "/100";
+        qnoEl.textContent = "10";
+        scoreEl.textContent = score;
+        return;
+      }
 
-  document.getElementById("stateBox").innerText=q.state;
-  document.getElementById("qno").innerText=current+1;
-  document.getElementById("score").innerText=score;
-  document.getElementById("feedback").innerText="";
+      locked = false;
 
-  let wrong = shuffle(allCapitals.filter(c=>c!==q.capital)).slice(0,3);
-  let options = shuffle([q.capital,...wrong]);
+      const q = selectedQuestions[current];
+      stateBox.textContent = q.state;
+      qnoEl.textContent = current + 1;
+      scoreEl.textContent = score;
+      feedbackEl.textContent = "";
 
-  let container=document.getElementById("options");
-  container.innerHTML="";
+      const wrongOptions = shuffle(allCapitals.filter(c => c !== q.capital)).slice(0, 3);
+      const options = shuffle([q.capital, ...wrongOptions]);
 
-  options.forEach(opt=>{
-    let btn=document.createElement("button");
-    btn.className="option-btn";
-    btn.innerText=opt;
-    btn.onclick=()=>checkAnswer(opt);
-    container.appendChild(btn);
-  });
-}
+      optionsEl.innerHTML = "";
 
-/* ANSWER */
-function checkAnswer(ans){
-  if(locked) return;
-  locked=true;
+      options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.textContent = option;
+        btn.onclick = () => checkAnswer(option);
+        optionsEl.appendChild(btn);
+      });
+    }
 
-  let correct=selectedQuestions[current].capital;
+    function checkAnswer(answer) {
+      if (locked) return;
+      locked = true;
 
-  document.querySelectorAll(".option-btn").forEach(b=>b.disabled=true);
+      const correct = selectedQuestions[current].capital;
+      document.querySelectorAll(".option-btn").forEach(btn => btn.disabled = true);
 
-  if(ans===correct){
-    score+=10;
-    document.getElementById("feedback").innerText="Correct!";
-    confettiBurst();
-    playSound(true);
-  }else{
-    document.getElementById("feedback").innerText="Wrong! Answer: "+correct;
-    playSound(false);
-  }
+      if (answer === correct) {
+        score += 10;
+        feedbackEl.textContent = "Correct!";
+        confettiBurst();
+        playSound(true);
+      } else {
+        feedbackEl.textContent = "Wrong! Answer: " + correct;
+        playSound(false);
+      }
 
-  current++;
-  setTimeout(showQuestion,1200);
-}
+      scoreEl.textContent = score;
 
-/* SOUND */
-function playSound(correct){
-  let ctx=new(window.AudioContext||window.webkitAudioContext)();
-  let osc=ctx.createOscillator();
-  let gain=ctx.createGain();
+      current++;
+      setTimeout(showQuestion, 1200);
+    }
 
-  osc.connect(gain);
-  gain.connect(ctx.destination);
+    function playSound(correct) {
+      if (isMuted) return;
 
-  osc.frequency.value=correct?600:200;
-  gain.gain.value=0.2;
+      initAudio();
+      if (!audioCtx) return;
 
-  osc.start();
-  osc.stop(ctx.currentTime+0.2);
-}
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
 
-/* ⭐ CONFETTI */
-function confettiBurst(){
-  let stars=["⭐","🌟","✨"];
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
 
-  for(let i=0;i<30;i++){
-    let c=document.createElement("div");
-    c.className="confetti";
-    c.innerText=stars[Math.floor(Math.random()*stars.length)];
-    c.style.left=Math.random()*100+"%";
-    c.style.animationDuration=(1+Math.random())+"s";
+      osc.type = "triangle";
+      osc.frequency.value = correct ? 700 : 220;
 
-    document.getElementById("confetti-container").appendChild(c);
+      gain.gain.setValueAtTime(Math.max(volume, 0.001), audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
 
-    setTimeout(()=>c.remove(),2000);
-  }
-}
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.25);
+    }
 
-startGame();
+    function confettiBurst() {
+      const stars = ["⭐", "🌟", "✨"];
 
-</script>
+      for (let i = 0; i < 30; i++) {
+        const c = document.createElement("div");
+        c.className = "confetti";
+        c.textContent = stars[Math.floor(Math.random() * stars.length)];
+        c.style.left = Math.random() * 100 + "%";
+        c.style.animationDuration = (1 + Math.random()) + "s";
+        confettiContainer.appendChild(c);
 
+        setTimeout(() => c.remove(), 2000);
+      }
+    }
+
+    startGame();
+  </script>
 </body>
 </html>
