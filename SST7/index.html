@@ -1,609 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Grade 6 SST - States of India Game</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(180deg, #e7f7ff 0%, #fff5d9 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      color: #2f3559;
-    }
+<title>States of India Game</title>
 
-    .game-container {
-      width: 100%;
-      max-width: 820px;
-      background: rgba(255, 255, 255, 0.97);
-      border-radius: 28px;
-      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.12);
-      padding: 24px 18px 26px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      border: 4px solid #ffffff;
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    #confetti-container {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 0;
-    }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(#e7f7ff, #fff5d9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 10px;
+}
 
-    .content {
-      position: relative;
-      z-index: 2;
-    }
+/* MAIN CONTAINER */
+.game-container {
+  width: 100%;
+  max-width: 700px;
+  background: white;
+  border-radius: 20px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
 
-    h1 {
-      margin: 0 0 8px;
-      font-size: clamp(1.8rem, 4vw, 2.5rem);
-      color: #ff6b6b;
-    }
+/* TITLE */
+h1 {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
 
-    .subtitle {
-      margin: 0 0 18px;
-      color: #5d678f;
-      font-size: clamp(1rem, 2.4vw, 1.1rem);
-      line-height: 1.5;
-    }
+.subtitle {
+  font-size: 14px;
+  margin-bottom: 14px;
+}
 
-    .scoreboard {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 18px;
-    }
+/* SCORE */
+.scoreboard {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
 
-    .score-box {
-      background: #f7fbff;
-      border: 2px solid #dceeff;
-      border-radius: 18px;
-      padding: 12px 16px;
-      min-width: 130px;
-      font-weight: bold;
-      font-size: 1rem;
-    }
+.score-box {
+  background: #eef7ff;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+}
 
-    .settings-panel {
-      background: #fdfcff;
-      border: 2px solid #ebe7ff;
-      border-radius: 20px;
-      padding: 14px;
-      margin-bottom: 18px;
-    }
+/* QUESTION */
+.state-box {
+  background: #e8f2ff;
+  padding: 18px;
+  border-radius: 16px;
+  font-size: 22px;
+  font-weight: bold;
+  margin: 12px 0;
+}
 
-    .settings-title {
-      font-weight: bold;
-      margin-bottom: 10px;
-      color: #5b5f88;
-    }
+/* OPTIONS */
+.button-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
 
-    .volume-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+.option-btn {
+  padding: 14px;
+  font-size: 14px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  background: #f4f4f4;
+}
 
-    .volume-wrap label {
-      font-weight: bold;
-      color: #4f5577;
-    }
+/* FEEDBACK */
+.feedback {
+  margin-top: 10px;
+  min-height: 40px;
+  font-weight: bold;
+}
 
-    input[type="range"] {
-      width: min(260px, 70vw);
-    }
+/* RESTART */
+.restart-btn {
+  margin-top: 12px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 12px;
+  background: #4aa3df;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
 
-    .question-card {
-      background: linear-gradient(180deg, #fffefb 0%, #f8fbff 100%);
-      border-radius: 24px;
-      padding: 26px 16px;
-      border: 3px dashed #ffd48a;
-      margin-bottom: 18px;
-    }
+/* 📱 MOBILE FIX */
+@media (max-width: 600px) {
 
-    .question-label {
-      font-size: clamp(1rem, 2.4vw, 1.2rem);
-      color: #4f5577;
-      font-weight: bold;
-      margin-bottom: 12px;
-    }
+  h1 {
+    font-size: 20px;
+  }
 
-    .state-box {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 220px;
-      min-height: 90px;
-      padding: 16px 22px;
-      margin: 10px 0 18px;
-      border-radius: 24px;
-      background: #e9f3ff;
-      border: 3px solid #cbdfff;
-      font-size: clamp(1.6rem, 4vw, 2.4rem);
-      font-weight: bold;
-      color: #30436e;
-      box-shadow: inset 0 -4px 0 rgba(0,0,0,0.05);
-    }
+  .state-box {
+    font-size: 20px;
+    padding: 14px;
+  }
 
-    .button-row {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(120px, 1fr));
-      gap: 14px;
-      margin-bottom: 14px;
-    }
+  .button-row {
+    grid-template-columns: 1fr;
+  }
 
-    .option-btn {
-      border: none;
-      border-radius: 20px;
-      min-height: 68px;
-      padding: 12px 14px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      color: #2f3559;
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-      position: relative;
-      z-index: 3;
-      line-height: 1.3;
-    }
+  .option-btn {
+    font-size: 16px;
+    padding: 16px;
+  }
 
-    .option-btn:hover {
-      transform: translateY(-2px);
-    }
+  .score-box {
+    font-size: 12px;
+  }
+}
 
-    .option-btn:active {
-      transform: scale(0.97);
-    }
-
-    .option-btn:nth-child(1) {
-      background: #ffe0e0;
-    }
-
-    .option-btn:nth-child(2) {
-      background: #e2f1ff;
-    }
-
-    .option-btn:nth-child(3) {
-      background: #e3ffeb;
-    }
-
-    .option-btn:nth-child(4) {
-      background: #fff1cc;
-    }
-
-    .feedback {
-      min-height: 62px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 18px;
-      padding: 10px 14px;
-      font-size: clamp(1rem, 2.4vw, 1.15rem);
-      font-weight: bold;
-      line-height: 1.4;
-    }
-
-    .feedback.correct {
-      background: #e8fff0;
-      color: #13794a;
-    }
-
-    .feedback.wrong {
-      background: #fff1f1;
-      color: #c53b3b;
-    }
-
-    .footer-area {
-      margin-top: 8px;
-    }
-
-    .restart-btn {
-      border: none;
-      border-radius: 18px;
-      padding: 14px 22px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      color: white;
-      background: #69c9f2;
-      box-shadow: 0 8px 16px rgba(105, 201, 242, 0.35);
-      position: relative;
-      z-index: 3;
-    }
-
-    .final-screen {
-      display: none;
-      background: linear-gradient(180deg, #fffefb 0%, #f7fbff 100%);
-      border: 3px dashed #ffd48a;
-      border-radius: 24px;
-      padding: 28px 18px;
-      margin-bottom: 18px;
-    }
-
-    .final-screen h2 {
-      margin-top: 0;
-      color: #ff6b6b;
-      font-size: clamp(1.6rem, 4vw, 2.1rem);
-    }
-
-    .final-score {
-      font-size: clamp(1.2rem, 3vw, 1.5rem);
-      font-weight: bold;
-      color: #40507a;
-      margin-bottom: 12px;
-    }
-
-    .final-message {
-      color: #5b668f;
-      font-size: 1.05rem;
-      line-height: 1.5;
-    }
-
-    .confetti {
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      border-radius: 2px;
-      opacity: 0.95;
-      animation: fall linear forwards;
-    }
-
-    @keyframes fall {
-      0% {
-        transform: translateY(-40px) rotate(0deg);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(700px) rotate(720deg);
-        opacity: 0;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .game-container {
-        padding: 18px 14px 22px;
-      }
-
-      .button-row {
-        grid-template-columns: 1fr;
-      }
-
-      .option-btn {
-        min-height: 64px;
-        font-size: 0.98rem;
-      }
-
-      .score-box {
-        min-width: 105px;
-        padding: 10px 12px;
-      }
-
-      .state-box {
-        min-width: 180px;
-      }
-    }
-  </style>
+</style>
 </head>
+
 <body>
-  <div class="game-container">
-    <div id="confetti-container"></div>
 
-    <div class="content">
-      <h1>States of India Game</h1>
-      <p class="subtitle">
-        Read the state name and choose the correct <strong>capital city</strong>.
-      </p>
+<div class="game-container">
 
-      <div class="scoreboard">
-        <div class="score-box">⭐ Score: <span id="score">0</span></div>
-        <div class="score-box">🎯 Question: <span id="questionNumber">1</span>/10</div>
-        <div class="score-box">🏆 Correct: <span id="correctCount">0</span></div>
-      </div>
+  <h1>States of India</h1>
+  <p class="subtitle">Choose the correct capital</p>
 
-      <div class="settings-panel">
-        <div class="settings-title">Sound Settings</div>
-        <div class="volume-wrap">
-          <label for="volumeControl">Volume:</label>
-          <input type="range" id="volumeControl" min="0" max="1.5" step="0.1" value="1.2" />
-          <span id="volumeValue">1.2x</span>
-        </div>
-      </div>
-
-      <div id="questionScreen">
-        <div class="question-card">
-          <div class="question-label">What is the capital of this state?</div>
-          <div class="state-box" id="stateBox">Maharashtra</div>
-
-          <div class="button-row" id="optionsContainer"></div>
-
-          <div id="feedback" class="feedback"></div>
-        </div>
-      </div>
-
-      <div id="finalScreen" class="final-screen">
-        <h2>Game Complete!</h2>
-        <div class="final-score">Your Score: <span id="finalScore">0</span>/100</div>
-        <div class="final-message" id="finalMessage"></div>
-      </div>
-
-      <div class="footer-area">
-        <button class="restart-btn" onclick="restartGame()">Restart Game</button>
-      </div>
-    </div>
+  <div class="scoreboard">
+    <div class="score-box">Score: <span id="score">0</span></div>
+    <div class="score-box">Q: <span id="qno">1</span>/10</div>
   </div>
 
-  <script>
-    const allQuestions = [
-      { state: "Maharashtra", capital: "Mumbai" },
-      { state: "Karnataka", capital: "Bengaluru" },
-      { state: "Tamil Nadu", capital: "Chennai" },
-      { state: "Gujarat", capital: "Gandhinagar" },
-      { state: "Rajasthan", capital: "Jaipur" },
-      { state: "West Bengal", capital: "Kolkata" },
-      { state: "Uttar Pradesh", capital: "Lucknow" },
-      { state: "Madhya Pradesh", capital: "Bhopal" },
-      { state: "Bihar", capital: "Patna" },
-      { state: "Punjab", capital: "Chandigarh" },
-      { state: "Haryana", capital: "Chandigarh" },
-      { state: "Odisha", capital: "Bhubaneswar" },
-      { state: "Assam", capital: "Dispur" },
-      { state: "Kerala", capital: "Thiruvananthapuram" },
-      { state: "Jharkhand", capital: "Ranchi" },
-      { state: "Chhattisgarh", capital: "Raipur" },
-      { state: "Himachal Pradesh", capital: "Shimla" },
-      { state: "Uttarakhand", capital: "Dehradun" },
-      { state: "Goa", capital: "Panaji" },
-      { state: "Sikkim", capital: "Gangtok" }
-    ];
+  <div class="state-box" id="stateBox">Maharashtra</div>
 
-    const allCapitals = [...new Set(allQuestions.map(q => q.capital))];
+  <div class="button-row" id="options"></div>
 
-    let questions = [];
-    let currentIndex = 0;
-    let score = 0;
-    let correctCount = 0;
-    let answered = false;
-    let volumeMultiplier = 1.2;
+  <div class="feedback" id="feedback"></div>
 
-    const stateBox = document.getElementById("stateBox");
-    const feedbackEl = document.getElementById("feedback");
-    const scoreEl = document.getElementById("score");
-    const questionNumberEl = document.getElementById("questionNumber");
-    const correctCountEl = document.getElementById("correctCount");
-    const questionScreen = document.getElementById("questionScreen");
-    const finalScreen = document.getElementById("finalScreen");
-    const finalScoreEl = document.getElementById("finalScore");
-    const finalMessageEl = document.getElementById("finalMessage");
-    const confettiContainer = document.getElementById("confetti-container");
-    const volumeControl = document.getElementById("volumeControl");
-    const volumeValue = document.getElementById("volumeValue");
-    const optionsContainer = document.getElementById("optionsContainer");
+  <button class="restart-btn" onclick="startGame()">Restart</button>
 
-    volumeControl.addEventListener("input", function () {
-      volumeMultiplier = parseFloat(this.value);
-      volumeValue.textContent = volumeMultiplier.toFixed(1) + "x";
-    });
+</div>
 
-    function shuffleArray(array) {
-      const arr = [...array];
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
+<script>
 
-    function loadQuestions() {
-      questions = shuffleArray(allQuestions).slice(0, 10);
-    }
+const questions = [
+  {state:"Maharashtra", capital:"Mumbai"},
+  {state:"Karnataka", capital:"Bengaluru"},
+  {state:"Tamil Nadu", capital:"Chennai"},
+  {state:"Gujarat", capital:"Gandhinagar"},
+  {state:"Rajasthan", capital:"Jaipur"},
+  {state:"West Bengal", capital:"Kolkata"},
+  {state:"Uttar Pradesh", capital:"Lucknow"},
+  {state:"Madhya Pradesh", capital:"Bhopal"},
+  {state:"Bihar", capital:"Patna"},
+  {state:"Punjab", capital:"Chandigarh"}
+];
 
-    function getOptions(correctCapital) {
-      const wrongOptions = shuffleArray(
-        allCapitals.filter(capital => capital !== correctCapital)
-      ).slice(0, 3);
+let current = 0;
+let score = 0;
 
-      return shuffleArray([correctCapital, ...wrongOptions]);
-    }
+function startGame() {
+  current = 0;
+  score = 0;
+  showQuestion();
+}
 
-    function showQuestion() {
-      if (currentIndex >= questions.length) {
-        endGame();
-        return;
-      }
+function showQuestion() {
 
-      answered = false;
-      feedbackEl.textContent = "";
-      feedbackEl.className = "feedback";
+  if(current >= questions.length){
+    document.getElementById("feedback").innerHTML = "Game Over! Score: " + score;
+    return;
+  }
 
-      const currentQuestion = questions[currentIndex];
-      stateBox.textContent = currentQuestion.state;
-      questionNumberEl.textContent = currentIndex + 1;
+  let q = questions[current];
 
-      const options = getOptions(currentQuestion.capital);
-      optionsContainer.innerHTML = "";
+  document.getElementById("stateBox").innerText = q.state;
+  document.getElementById("qno").innerText = current + 1;
+  document.getElementById("score").innerText = score;
 
-      options.forEach(option => {
-        const btn = document.createElement("button");
-        btn.className = "option-btn";
-        btn.textContent = option;
-        btn.onclick = () => checkAnswer(option);
-        optionsContainer.appendChild(btn);
-      });
+  let options = shuffle([
+    q.capital,
+    ...questions.map(x=>x.capital).filter(x=>x!==q.capital).slice(0,3)
+  ]);
 
-      updateBoard();
-    }
+  let container = document.getElementById("options");
+  container.innerHTML = "";
 
-    function checkAnswer(selectedAnswer) {
-      if (answered) return;
-      answered = true;
+  options.forEach(opt => {
+    let btn = document.createElement("button");
+    btn.className = "option-btn";
+    btn.innerText = opt;
+    btn.onclick = () => checkAnswer(opt);
+    container.appendChild(btn);
+  });
 
-      const currentQuestion = questions[currentIndex];
-      const correctAnswer = currentQuestion.capital;
+}
 
-      const buttons = document.querySelectorAll(".option-btn");
-      buttons.forEach(btn => btn.disabled = true);
+function checkAnswer(ans){
 
-      if (selectedAnswer === correctAnswer) {
-        score += 10;
-        correctCount += 1;
-        feedbackEl.textContent = `Correct! The capital of ${currentQuestion.state} is ${correctAnswer}.`;
-        feedbackEl.className = "feedback correct";
-        playCorrectSound();
-        launchConfetti();
-      } else {
-        feedbackEl.textContent = `Oops! The capital of ${currentQuestion.state} is ${correctAnswer}.`;
-        feedbackEl.className = "feedback wrong";
-        playWrongSound();
-      }
+  let correct = questions[current].capital;
 
-      updateBoard();
+  if(ans === correct){
+    score += 10;
+    document.getElementById("feedback").innerText = "Correct!";
+  } else {
+    document.getElementById("feedback").innerText = "Wrong! Answer: " + correct;
+  }
 
-      setTimeout(() => {
-        currentIndex += 1;
-        showQuestion();
-      }, 1500);
-    }
+  current++;
 
-    function updateBoard() {
-      scoreEl.textContent = score;
-      correctCountEl.textContent = correctCount;
-      questionNumberEl.textContent = Math.min(currentIndex + 1, 10);
-    }
+  setTimeout(showQuestion, 1200);
+}
 
-    function endGame() {
-      questionScreen.style.display = "none";
-      finalScreen.style.display = "block";
-      finalScoreEl.textContent = score;
+function shuffle(arr){
+  return arr.sort(()=>Math.random()-0.5);
+}
 
-      if (score === 100) {
-        finalMessageEl.textContent = "Excellent! You know the states and capitals of India really well. Geography crown unlocked!";
-        launchConfettiBurst(70);
-        playCorrectSound();
-      } else if (score >= 70) {
-        finalMessageEl.textContent = "Great job! You have a strong understanding of states and capitals.";
-      } else if (score >= 40) {
-        finalMessageEl.textContent = "Nice effort! Practice a little more and you will improve quickly.";
-      } else {
-        finalMessageEl.textContent = "Good try! Restart the game and give it another go.";
-      }
-    }
+startGame();
 
-    function restartGame() {
-      currentIndex = 0;
-      score = 0;
-      correctCount = 0;
-      answered = false;
-      loadQuestions();
-      questionScreen.style.display = "block";
-      finalScreen.style.display = "none";
-      showQuestion();
-    }
+</script>
 
-    function playCorrectSound() {
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const now = audioCtx.currentTime;
-      const notes = [660, 880, 1040, 1320];
-
-      notes.forEach((note, i) => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-
-        osc.type = "triangle";
-        osc.frequency.setValueAtTime(note, now + i * 0.08);
-
-        const safePeak = Math.min(0.8 * volumeMultiplier, 1.5);
-        gain.gain.setValueAtTime(0.0001, now + i * 0.08);
-        gain.gain.exponentialRampToValueAtTime(safePeak, now + i * 0.08 + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.08 + 0.24);
-
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        osc.start(now + i * 0.08);
-        osc.stop(now + i * 0.08 + 0.26);
-      });
-    }
-
-    function playWrongSound() {
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const now = audioCtx.currentTime;
-
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-
-      osc.type = "sawtooth";
-      osc.frequency.setValueAtTime(220, now);
-      osc.frequency.linearRampToValueAtTime(120, now + 0.42);
-
-      const safePeak = Math.min(1.0 * volumeMultiplier, 1.5);
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(safePeak, now + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.44);
-
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      osc.start(now);
-      osc.stop(now + 0.46);
-    }
-
-    function launchConfetti() {
-      launchConfettiBurst(35);
-    }
-
-    function launchConfettiBurst(count) {
-      const colors = ["#ff6b6b", "#ffd93d", "#6bcB77", "#4d96ff", "#c77dff", "#ff9f68"];
-
-      for (let i = 0; i < count; i++) {
-        const confetti = document.createElement("div");
-        confetti.classList.add("confetti");
-
-        confetti.style.left = Math.random() * 100 + "%";
-        confetti.style.top = "-20px";
-        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        confetti.style.width = (8 + Math.random() * 8) + "px";
-        confetti.style.height = (8 + Math.random() * 8) + "px";
-        confetti.style.animationDuration = (900 + Math.random() * 900) + "ms";
-
-        confettiContainer.appendChild(confetti);
-
-        setTimeout(() => confetti.remove(), 2200);
-      }
-    }
-
-    document.body.addEventListener("click", () => {
-      try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        gain.gain.value = 0.0001;
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.01);
-      } catch (e) {}
-    }, { once: true });
-
-    loadQuestions();
-    showQuestion();
-  </script>
 </body>
 </html>
